@@ -123,12 +123,8 @@ sudo crontab -e
 #### Change the config.py to reflect your credentials
 
 ```
-
 ################################################
-################################################
-    88888888888888888 CORE 88888888888888888
-################################################
-################################################
+# CORE
 
 # Database configuration
 DB_HOST = 'localhost'
@@ -152,14 +148,11 @@ BOT_TOKEN = 'yourdiscordbottoken'
 INACTIVE_TIME = 300
 
 ################################################
-################################################
-    88888888888888888 CROWN 8888888888888888
-################################################
-################################################
+# CROWN
 
 # RPC Details
 RPC_USER = 'rpcuser'
-RPC_PASSWORD = 'RPC_PASSWORD = 'rpcpassword'
+RPC_PASSWORD = 'rpcpassword'
 
 # Return address for change (Admin owned address)(Example address, please change)
 CHANGE_ADDRESS = 'CRWDv7Hu412jEGyswZSqD9PGPH2ajM5wGhP2'
@@ -168,10 +161,7 @@ CHANGE_ADDRESS = 'CRWDv7Hu412jEGyswZSqD9PGPH2ajM5wGhP2'
 CONFS_NEEDED = 6
 
 ################################################
-################################################
-    8888888888888 MECHANICS 8888888888888
-################################################
-################################################
+# MECHANICS
 
 # Battle timeout
 BATTLE_TIMEOUT = 600
