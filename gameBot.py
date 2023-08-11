@@ -18,8 +18,6 @@ from config import SLEEP_TIME, DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, RPC_USER,
 from crownConn import is_valid_crw_address, generate_payment_address, get_block_count, is_crown_wallet_online
 from discord import Intents, Embed
 from discord.ext import commands
-from riddles import riddles
-from puzzles import word_puzzles
 
 # Define the global scheduler_thread variable
 scheduler_thread = None

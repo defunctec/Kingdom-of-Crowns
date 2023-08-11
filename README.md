@@ -19,23 +19,104 @@ Kingdom of Crowns is a Discord bot that enables a emote/text-based RPG experienc
 
 ## Installation
 [Back to top](#top)
-#### To install and run Kingdom of Crowns, follow these steps:
+#### Server setup
 
 ```bash
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install Python
+sudo apt-get install python3.11
+sudo apt-get install python3-dev default-libmysqlclient-dev libssl-dev libcairo2-dev pkg-config -y
+sudo apt install pip -y
+pip install pycairo
+
+# Install php
+sudo apt install php libapache2-mod-php -y
+sudo systemctl restart apache2
+
+# Install the database
+sudo apt install mysql-server -y
+sudo mysql_secure_installation
+
+# Install phpmyadmin for database management
+sudo apt install phpmyadmin -y
+
+# Open this file
+nano /etc/apache2/apache2.conf
+# And add this to the bottom
+Include /etc/phpmyadmin/apache.conf
+```
+#### Game setup
+```bash
 # Clone the repository:
-git clone https://github.com/defunctec/Kingdom-of-Crowns.git
+git clone https://github.com/defunctec/Kingdom-of-Crowns.git /home/Kingdom-of-Crowns
 
 # Change directory into the project:
-cd Kingdom-of-Crowns
+cd /home/Kingdom-of-Crowns
 
 # Install the requirements:
 pip install -r requirements.txt
 ```
 
-#### Download and install the Crown(CRW) client
+#### Add database tables
+[Database](#database)
+
+#### Download the Crown(CRW) client
 ```bash
-Crown install instructions heres
+wget "https://github.com/Crowndev/crown-core/releases/download/v0.14.0.4/Crown-0.14.0.4-Linux64.zip" -O $dir/crown.zip
 ```
+
+#### Download the watchdog script to help maintain the Crown client.
+```bash
+wget "https://raw.githubusercontent.com/Crowndev/crowncoin/master/scripts/crownwatch.sh" -O $dir/crownwatch.sh
+```
+
+#### Unzip and install the Crown package
+```bash
+sudo apt install unzip -y
+sudo unzip -qd $dir/crown $dir/crown.zip
+sudo cp -f $dir/crown/*/bin/* /usr/local/bin/
+sudo cp -f $dir/crown/*/lib/* /usr/local/lib/
+sudo chmod +x $dir/crownwatch.sh
+sudo cp -f $dir/crownwatch.sh /usr/local/bin
+```
+
+#### First run the Crown client to create files, it will fail
+```bash
+sudo crownd
+```
+#### Create or edit the Crown config file
+```bash
+nano .crown/crown.conf
+```
+#### Add this with your client detailss
+```bash
+rpcuser=rpcusername
+rpcpassword=rpcpassword
+walletnotify=/usr/bin/python3 /home/Kingdom-of-Crowns/transaction_handler.py %s
+maxtxfee=0.1
+```
+#### Run the Crown client again, leave to sync.
+```bash
+sudo crownd
+```
+
+#### You should obtain a new address to use as the admin address for any change transactions
+```bash
+sudo crown-cli getnewaddress koc_admin
+```
+
+#### Optional - Create crontab entries to restart the Crown client and game
+```bash
+sudo crontab -e
+```
+
+```bash
+@reboot /usr/bin/python3 /home/Kingdom-of-Crowns/gameBot.py > /home/Kingdom-of-Crowns/cron.log 2>&1
+@reboot crownd -daemon
+```
+
 
 ## Configuration
 [Back to top](#top)
@@ -397,32 +478,32 @@ VALUES
 
 #### Items information
 ```
-INSERT INTO items (name, class, strength, agility, intelligence, stamina, rarity, price, description)
+INSERT INTO items (name, class, strength, agility, intelligence, stamina, price, rarity, description)
 VALUES
-    ('Health Potion', 'Consumable', 0, 0, 0, 0, 'Common', 'Restores a moderate amount of health to the player upon consumption.'),
-    ('Mana Elixir', 'Consumable', 0, 0, 0, 0, 'Common', 'Restores a moderate amount of mana to the player upon consumption.'),
-    ('Scroll of Teleportation', 'Consumable', 0, 0, 0, 0, 'Rare', 'Allows the player to teleport to a previously visited town.'),
+    ('Health Potion', 'Consumable', 0, 0, 0, 1, 50, 'Common', 'Restores a moderate amount of health to the player upon consumption.'),
+    ('Mana Elixir', 'Consumable', 0, 0, 0, 1, 50, 'Common', 'Restores a moderate amount of mana to the player upon consumption.'),
+    ('Scroll of Teleportation', 'Consumable', 0, 0, 0, 1, 150, 'Rare', 'Allows the player to teleport to a previously visited town.'),
 
-    ('Ring of Power', 'Ring', 5, 5, 5, 5, 'Legendary', 'A legendary ring that empowers all attributes of the wearer to extraordinary levels.'),
-    ('Ring of Agility', 'Ring', 0, 10, 0, 0, 'Legendary', 'A ring that enhances the wearer''s agility, greatly improving their movement speed and dexterity.'),
-    ('Ring of Intellect', 'Ring', 0, 0, 8, 0, 'Legendary', 'A ring that enhances the wearer''s intellect, greatly improving their magical prowess and knowledge.'),
-    ('Ring of Vitality', 'Ring', 0, 0, 0, 10, 'Legendary', 'A ring that enhances the wearer''s vitality, greatly boosting their maximum health and endurance.'),
-    ('Ring of Strength', 'Ring', 5, 0, 0, 0, 'Legendary', 'A ring that enhances the wearer''s strength, significantly augmenting their melee attack power and physical capabilities.'),
-    ('Ring of Wisdom', 'Ring', 0, 0, 8, 0, 'Legendary', 'A legendary ring that enhances the wearer''s wisdom, greatly improving their magical abilities and perception.'),
-    ('Ring of Protection', 'Ring', 7, 0, 0, 0, 'Legendary', 'A legendary ring that enhances the wearer''s defense, providing unparalleled protection against all forms of attack.'),
+    ('Ring of Power', 'Ring', 5, 5, 5, 5, 0, 'Legendary', 'A legendary ring that empowers all attributes of the wearer to extraordinary levels.'),
+    ('Ring of Agility', 'Ring', 0, 10, 0, 0, 0, 'Legendary', 'A ring that enhances the wearer''s agility, greatly improving their movement speed and dexterity.'),
+    ('Ring of Intellect', 'Ring', 0, 0, 8, 0, 0, 'Legendary', 'A ring that enhances the wearer''s intellect, greatly improving their magical prowess and knowledge.'),
+    ('Ring of Vitality', 'Ring', 0, 0, 0, 10, 0, 'Legendary', 'A ring that enhances the wearer''s vitality, greatly boosting their maximum health and endurance.'),
+    ('Ring of Strength', 'Ring', 5, 0, 0, 0, 0, 'Legendary', 'A ring that enhances the wearer''s strength, significantly augmenting their melee attack power and physical capabilities.'),
+    ('Ring of Wisdom', 'Ring', 0, 0, 8, 0, 0, 'Legendary', 'A legendary ring that enhances the wearer''s wisdom, greatly improving their magical abilities and perception.'),
+    ('Ring of Protection', 'Ring', 7, 0, 0, 0, 0, 'Legendary', 'A legendary ring that enhances the wearer''s defense, providing unparalleled protection against all forms of attack.'),
 
-    ('Amulet of Wisdom', 'Amulet', 0, 0, 5, 0, 'Epic', 'An amulet that enhances the wearer''s intelligence, significantly boosting their magical prowess and knowledge.'),
-    ('Amulet of Balance', 'Amulet', 7, 7, 7, 7, 'Legendary', 'An amulet that brings balance to the wearer''s attributes, providing significant improvements to strength, agility, intelligence, and stamina.'),
-    ('Amulet of Protection', 'Amulet', 10, 0, 0, 0, 'Legendary', 'An amulet that enhances the wearer''s defense, significantly reducing incoming damage and improving their survivability.'),
-    ('Amulet of Sorcery', 'Amulet', 0, 0, 10, 0, 'Legendary', 'An amulet that enhances the wearer''s sorcery, significantly amplifying their magical spells and abilities.'),
-    ('Amulet of Power', 'Amulet', 5, 5, 5, 5, 'Legendary', 'A legendary amulet that empowers all attributes of the wearer to extraordinary levels.'),
+    ('Amulet of Wisdom', 'Amulet', 0, 0, 5, 0, 0, 'Epic', 'An amulet that enhances the wearer''s intelligence, significantly boosting their magical prowess and knowledge.'),
+    ('Amulet of Balance', 'Amulet', 7, 7, 7, 7, 0, 'Legendary', 'An amulet that brings balance to the wearer''s attributes, providing significant improvements to strength, agility, intelligence, and stamina.'),
+    ('Amulet of Protection', 'Amulet', 10, 0, 0, 0, 0, 'Legendary', 'An amulet that enhances the wearer''s defense, significantly reducing incoming damage and improving their survivability.'),
+    ('Amulet of Sorcery', 'Amulet', 0, 0, 10, 0, 0, 'Legendary', 'An amulet that enhances the wearer''s sorcery, significantly amplifying their magical spells and abilities.'),
+    ('Amulet of Power', 'Amulet', 5, 5, 5, 5, 0, 'Legendary', 'A legendary amulet that empowers all attributes of the wearer to extraordinary levels.'),
 
-    ('Charm of Agility', 'Charm', 0, 10, 0, 0, 'Legendary', 'A charm that enhances the wearer''s agility, significantly improving their movement speed and dexterity.'),
-    ('Charm of Intellect', 'Charm', 0, 0, 7, 0, 'Epic', 'A charm that enhances the wearer''s intellect, significantly improving their magical prowess and knowledge.'),
-    ('Charm of Endurance', 'Charm', 0, 0, 0, 10, 'Legendary', 'A charm that enhances the wearer''s endurance, significantly boosting their maximum health and endurance.'),
-    ('Charm of Strength', 'Charm', 7, 0, 0, 0, 'Legendary', 'A charm that enhances the wearer''s strength, significantly augmenting their melee attack power and physical capabilities.'),
-    ('Charm of Wisdom', 'Charm', 0, 0, 8, 0, 'Legendary', 'A legendary charm that enhances the wearer''s wisdom, greatly improving their magical abilities and perception.'),
-    ('Charm of Stamina', 'Charm', 0, 0, 0, 15, 'Legendary', 'A legendary charm that enhances the wearer''s stamina');
+    ('Charm of Agility', 'Charm', 0, 10, 0, 0, 0, 'Legendary', 'A charm that enhances the wearer''s agility, significantly improving their movement speed and dexterity.'),
+    ('Charm of Intellect', 'Charm', 0, 0, 7, 0, 0, 'Epic', 'A charm that enhances the wearer''s intellect, significantly improving their magical prowess and knowledge.'),
+    ('Charm of Endurance', 'Charm', 0, 0, 0, 10, 0, 'Legendary', 'A charm that enhances the wearer''s endurance, significantly boosting their maximum health and endurance.'),
+    ('Charm of Strength', 'Charm', 7, 0, 0, 0, 0, 'Legendary', 'A charm that enhances the wearer''s strength, significantly augmenting their melee attack power and physical capabilities.'),
+    ('Charm of Wisdom', 'Charm', 0, 0, 8, 0, 0, 'Legendary', 'A legendary charm that enhances the wearer''s wisdom, greatly improving their magical abilities and perception.'),
+    ('Charm of Stamina', 'Charm', 0, 0, 0, 15, 0, 'Legendary', 'A legendary charm that enhances the wearer''s stamina');
 
 UPDATE items
 SET price = 
@@ -435,8 +516,7 @@ SET price =
     + CASE
         WHEN (strength + agility + intelligence + stamina) = 0 THEN 0
         ELSE (strength + agility + intelligence + stamina) * 5
-    END
-WHERE price IS 0;
+    END;
 ```
 
 #### Weapons information
@@ -489,9 +569,8 @@ SET price =
     END
     + CASE
         WHEN (strength + agility + intelligence + stamina) = 0 THEN 0
-        ELSE (strength + agility + intelligence + stamina) * 3
-    END
-WHERE price IS 0;
+        ELSE (strength + agility + intelligence + stamina) * 5
+    END;
 ```
 
 #### Armour information
@@ -640,8 +719,7 @@ SET price =
     + CASE
         WHEN (strength + agility + intelligence + stamina) = 0 THEN 0
         ELSE (strength + agility + intelligence + stamina) * 5
-    END
-WHERE price IS 0;s
+    END;
 ```
 
 #### Map tile information
@@ -756,9 +834,14 @@ VALUES
 
 ## Usage
 [Back to top](#top)
+#### Use this from the server console to start the game bot
+```
+/usr/bin/python3 /home/Kingdom-of-Crowns/gameBot.py
+```
+
 #### Use *help to see all commands. *join to create an account and *play to open a game thread
 
-```bash
+```
 # See all commands
 *help
 
