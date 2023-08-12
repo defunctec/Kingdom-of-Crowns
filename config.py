@@ -7,9 +7,6 @@ DB_USER = 'yourusername'
 DB_PASSWORD = 'yourpassword'
 DB_NAME = 'kingdom_of_crowns'
 
-# Force script to hold for a duration of time to allow database to start 
-SLEEP_TIME = 60
-
 # The Discord channel in which the bot will listen to commands
 CHANNEL_ID = yourchannelid
 

@@ -5,6 +5,7 @@ import aiomysql
 import asyncio
 import datetime
 import time
+time.sleep(80)
 import threading
 import aiohttp
 import math
@@ -14,7 +15,7 @@ import logging
 import random
 import traceback
 from asyncio import Lock
-from config import SLEEP_TIME, DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, RPC_USER, RPC_PASSWORD, CHANNEL_ID, TOTAL_TILES, BOT_TOKEN, HEALTH_PER_STRENGTH, MANA_PER_INTELLIGENCE, DAMAGE_PER_STRENGTH, DAMAGE_PER_INTELLIGENCE, SPAWN_BOSS_CHANCE, DODGE_PER_AGILITY, INACTIVE_TIME, BATTLE_TIMEOUT, BOSS_DROP_CHANCE, MOB_DROP_CHANCE, RARITY_WEIGHTS, STARTING_ARMOUR_ID, STARTING_ARMOUR_CLASS, MIN_GOLD_PER_STRENGTH, MAX_GOLD_PER_STRENGTH, DEFAULT_AGILITY_REDUCTION 
+from config import DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, RPC_USER, RPC_PASSWORD, CHANNEL_ID, TOTAL_TILES, BOT_TOKEN, HEALTH_PER_STRENGTH, MANA_PER_INTELLIGENCE, DAMAGE_PER_STRENGTH, DAMAGE_PER_INTELLIGENCE, SPAWN_BOSS_CHANCE, DODGE_PER_AGILITY, INACTIVE_TIME, BATTLE_TIMEOUT, BOSS_DROP_CHANCE, MOB_DROP_CHANCE, RARITY_WEIGHTS, STARTING_ARMOUR_ID, STARTING_ARMOUR_CLASS, MIN_GOLD_PER_STRENGTH, MAX_GOLD_PER_STRENGTH, DEFAULT_AGILITY_REDUCTION 
 from crownConn import is_valid_crw_address, generate_payment_address, get_block_count, is_crown_wallet_online
 from discord import Intents, Embed
 from discord.ext import commands
@@ -103,7 +104,6 @@ async def create_pool_connection():
 # Define the main asynchronous function
 async def main():
     try:
-        await asyncio.sleep(SLEEP_TIME)
         await create_pool_connection()
         await run_bot()
     except asyncio.exceptions.CancelledError:
